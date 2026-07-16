@@ -20,12 +20,13 @@ class Patu_API {
 	 * Compress raw image bytes, requesting a specific output format (same-format
 	 * optimization: jpeg -> jpeg, webp -> webp).
 	 *
-	 * @param string $bytes        Raw image bytes.
-	 * @param string $content_type e.g. image/jpeg.
-	 * @param string $format       Output encoder, e.g. jpeg or webp.
+	 * @param string   $bytes        Raw image bytes.
+	 * @param string   $content_type e.g. image/jpeg.
+	 * @param string   $format       Output encoder, e.g. jpeg or webp.
+	 * @param int|null $timeout      Per-request timeout in seconds (null = default).
 	 * @return array|WP_Error { bytes, format, output_bytes } or WP_Error.
 	 */
-	public static function compress( $bytes, $content_type, $format ) {
+	public static function compress( $bytes, $content_type, $format, $timeout = null ) {
 		$key = Patu_Key::get();
 		if ( '' === $key ) {
 			return new WP_Error( 'patu_no_key', __( 'No Patu API key configured.', 'patu' ) );
@@ -33,6 +34,9 @@ class Patu_API {
 
 		$endpoint = untrailingslashit( (string) apply_filters( 'patu_endpoint', self::ENDPOINT ) );
 		$url      = $endpoint . '/v1/compress?formats=' . rawurlencode( $format );
+		if ( null === $timeout ) {
+			$timeout = (int) apply_filters( 'patu_timeout', 30 );
+		}
 
 		$res = wp_remote_post(
 			$url,
@@ -42,7 +46,7 @@ class Patu_API {
 					'Content-Type' => $content_type,
 				),
 				'body'    => $bytes,
-				'timeout' => (int) apply_filters( 'patu_timeout', 30 ),
+				'timeout' => max( 1, (int) $timeout ),
 			)
 		);
 
@@ -73,36 +77,21 @@ class Patu_API {
 	}
 
 	/**
-	 * A tiny end-to-end check for the settings "test connection" button. Sends a
-	 * small generated JPEG and reports success or the error.
+	 * A real end-to-end check for the settings "test connection" button. Sends a
+	 * small embedded JPEG (so it does not depend on GD and always exercises the
+	 * key against the API) and reports success or the error.
 	 *
 	 * @return true|WP_Error
 	 */
 	public static function test_connection() {
-		$jpeg = self::sample_jpeg();
-		if ( '' === $jpeg ) {
-			// No GD to build a sample; fall back to a key-presence check.
-			return Patu_Key::is_set() ? true : new WP_Error( 'patu_no_key', __( 'No Patu API key configured.', 'patu' ) );
+		$jpeg = base64_decode( self::SAMPLE_JPEG_B64, true );
+		if ( false === $jpeg ) {
+			return new WP_Error( 'patu_internal', __( 'Could not build a test image.', 'patu' ) );
 		}
-		$res = self::compress( $jpeg, 'image/jpeg', 'jpeg' );
+		$res = self::compress( $jpeg, 'image/jpeg', 'jpeg', 15 );
 		return is_wp_error( $res ) ? $res : true;
 	}
 
-	/** A small gradient JPEG via GD, or '' when GD is unavailable. */
-	private static function sample_jpeg() {
-		if ( ! function_exists( 'imagecreatetruecolor' ) || ! function_exists( 'imagejpeg' ) ) {
-			return '';
-		}
-		$im = imagecreatetruecolor( 64, 64 );
-		for ( $y = 0; $y < 64; $y++ ) {
-			for ( $x = 0; $x < 64; $x++ ) {
-				imagesetpixel( $im, $x, $y, imagecolorallocate( $im, $x * 4, $y * 4, 128 ) );
-			}
-		}
-		ob_start();
-		imagejpeg( $im, null, 90 );
-		$bytes = (string) ob_get_clean();
-		imagedestroy( $im );
-		return $bytes;
-	}
+	/** An 8x8 JPEG used only by test_connection(). */
+	const SAMPLE_JPEG_B64 = '/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gODAK/9sAQwAGBAUGBQQGBgUGBwcGCAoQCgoJCQoUDg8MEBcUGBgXFBYWGh0lHxobIxwWFiAsICMmJykqKRkfLTAtKDAlKCko/9sAQwEHBwcKCAoTCgoTKBoWGigoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgo/8AAEQgACAAIAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8Aw/C3w/8Aufuf0ooorzMZmuJ9o/eN+HM6xf1KPvH/2Q==';
 }

@@ -53,8 +53,14 @@ class Patu_Bulk {
 		return array( 'image/jpeg', 'image/webp' );
 	}
 
-	/** IDs of supported attachments, either not-yet-optimized or already-optimized. */
+	/** IDs of supported attachments: pending (not fully optimized) or already-optimized. */
 	private static function query_ids( $op ) {
+		// Pending keys on the "done" marker so a partially-optimized attachment
+		// (e.g. one truncated by the on-upload time budget) is still picked up
+		// and finished. Restore keys on the per-file meta.
+		$meta = ( 'restore' === $op )
+			? array( 'key' => Patu_Optimizer::META, 'compare' => 'EXISTS' )
+			: array( 'key' => Patu_Optimizer::DONE, 'compare' => 'NOT EXISTS' );
 		$args = array(
 			'post_type'      => 'attachment',
 			'post_status'    => 'inherit',
@@ -62,12 +68,7 @@ class Patu_Bulk {
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			'no_found_rows'  => true,
-			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				array(
-					'key'     => Patu_Optimizer::META,
-					'compare' => ( 'restore' === $op ) ? 'EXISTS' : 'NOT EXISTS',
-				),
-			),
+			'meta_query'     => array( $meta ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		);
 		$q = new WP_Query( $args );
 		return array_map( 'intval', $q->posts );
@@ -75,14 +76,14 @@ class Patu_Bulk {
 
 	public static function ajax_ids() {
 		self::guard();
-		$op = ( isset( $_POST['op'] ) && 'restore' === $_POST['op'] ) ? 'restore' : 'optimize';
+		$op = ( isset( $_POST['op'] ) && 'restore' === sanitize_key( wp_unslash( $_POST['op'] ) ) ) ? 'restore' : 'optimize';
 		wp_send_json_success( array( 'ids' => self::query_ids( $op ) ) );
 	}
 
 	public static function ajax_one() {
 		self::guard();
 		$id = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
-		$op = ( isset( $_POST['op'] ) && 'restore' === $_POST['op'] ) ? 'restore' : 'optimize';
+		$op = ( isset( $_POST['op'] ) && 'restore' === sanitize_key( wp_unslash( $_POST['op'] ) ) ) ? 'restore' : 'optimize';
 		if ( ! $id ) {
 			wp_send_json_error( array( 'message' => 'bad id' ) );
 		}

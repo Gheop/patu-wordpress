@@ -26,7 +26,9 @@ class Patu_Upload {
 			return $metadata;
 		}
 		try {
-			Patu_Optimizer::optimize_attachment( $attachment_id );
+			// Bound the on-upload work so it can never exhaust the PHP time
+			// limit; any sizes left over are finished by a later bulk run.
+			Patu_Optimizer::optimize_attachment( $attachment_id, self::budget() );
 		} catch ( \Throwable $e ) {
 			// Never break an upload: the original files are kept as they are.
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
@@ -34,5 +36,12 @@ class Patu_Upload {
 			}
 		}
 		return $metadata; // Files shrank in place; the metadata is unchanged.
+	}
+
+	/** Wall-clock budget for on-upload optimization, kept under the PHP time limit. */
+	private static function budget() {
+		$max    = (int) ini_get( 'max_execution_time' );
+		$budget = ( $max > 0 ) ? max( 8, $max - 8 ) : 45;
+		return (float) apply_filters( 'patu_upload_budget', $budget );
 	}
 }

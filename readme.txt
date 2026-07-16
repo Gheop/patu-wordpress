@@ -76,8 +76,9 @@ can be optimized in place without changing the file's format or URL.
 
 = Where does my API key go? =
 
-Only to patu.dev, only in the `X-Api-Key` request header. It is never logged or
-shown in the page.
+Only to patu.dev, and only in the `X-Api-Key` request header. It is never
+logged; on the settings page only an administrator can see it, in a masked
+password field.
 
 == Changelog ==
 
