@@ -1,0 +1,26 @@
+.patu-lede { max-width: 640px; color: #50575e; font-size: 14px; }
+
+.patu-stats { display: flex; gap: 16px; margin: 18px 0 24px; }
+.patu-stat {
+	background: #fff; border: 1px solid #dcdcde; border-radius: 8px;
+	padding: 16px 22px; min-width: 140px; display: flex; flex-direction: column; gap: 4px;
+}
+.patu-stat-val { font-size: 26px; font-weight: 600; color: #1d2327; line-height: 1.1; }
+.patu-stat-key { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #646970; }
+
+.patu-test-result { margin-left: 10px; font-weight: 500; }
+.patu-testing { color: #646970; }
+.patu-ok { color: #007017; }
+.patu-err { color: #b32d2e; }
+
+/* Bulk optimize */
+.patu-bulk-bar { background: #dcdcde; border-radius: 6px; height: 22px; overflow: hidden; max-width: 640px; margin: 12px 0; }
+.patu-bulk-fill { background: #d98a45; height: 100%; width: 0; transition: width .3s ease; }
+.patu-bulk-log { max-width: 640px; max-height: 240px; overflow: auto; background: #fff; border: 1px solid #dcdcde; border-radius: 6px; padding: 10px 14px; font: 12px/1.6 ui-monospace, monospace; color: #3c434a; margin-top: 12px; }
+.patu-bulk-log .ok { color: #007017; }
+.patu-bulk-log .skip { color: #646970; }
+.patu-bulk-log .err { color: #b32d2e; }
+
+/* Media column */
+.patu-col-opt { color: #007017; }
+.patu-col-none { color: #646970; }
