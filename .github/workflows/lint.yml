@@ -1,0 +1,23 @@
+name: Lint
+
+# Lints every plugin PHP file on the minimum and a current PHP version, so a
+# syntax error (especially one that only trips on PHP 7.4) is caught in CI.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ["7.4", "8.3"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - name: Lint plugin PHP
+        run: find patu.php uninstall.php includes -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
