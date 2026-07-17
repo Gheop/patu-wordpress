@@ -22,13 +22,22 @@ class Patu_Upload {
 		if ( '1' !== get_option( 'patu_auto', '1' ) ) {
 			return $metadata;
 		}
-		if ( ! Patu_Key::is_set() || ! Patu_Optimizer::is_supported( $attachment_id ) ) {
+		if ( ! Patu_Key::is_set() ) {
+			return $metadata;
+		}
+		$nextgen = 'nextgen' === patu_mode();
+		$ok      = $nextgen ? Patu_Nextgen::is_supported( $attachment_id ) : Patu_Optimizer::is_supported( $attachment_id );
+		if ( ! $ok ) {
 			return $metadata;
 		}
 		try {
 			// Bound the on-upload work so it can never exhaust the PHP time
 			// limit; any sizes left over are finished by a later bulk run.
-			Patu_Optimizer::optimize_attachment( $attachment_id, self::budget() );
+			if ( $nextgen ) {
+				Patu_Nextgen::generate( $attachment_id, self::budget() );
+			} else {
+				Patu_Optimizer::optimize_attachment( $attachment_id, self::budget() );
+			}
 		} catch ( \Throwable $e ) {
 			// Never break an upload: the original files are kept as they are.
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {

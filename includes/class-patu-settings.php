@@ -39,10 +39,27 @@ class Patu_Settings {
 		register_setting( 'patu_settings', 'patu_api_key', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
 		register_setting( 'patu_settings', 'patu_auto', array( 'sanitize_callback' => array( __CLASS__, 'bool' ), 'default' => '1' ) );
 		register_setting( 'patu_settings', 'patu_backup', array( 'sanitize_callback' => array( __CLASS__, 'bool' ), 'default' => '1' ) );
+		register_setting( 'patu_settings', 'patu_mode', array( 'sanitize_callback' => array( __CLASS__, 'mode' ), 'default' => 'inplace' ) );
+		register_setting( 'patu_settings', 'patu_ng_formats', array( 'sanitize_callback' => array( __CLASS__, 'formats' ), 'default' => 'avif,webp' ) );
 	}
 
 	public static function bool( $v ) {
 		return $v ? '1' : '0';
+	}
+
+	public static function mode( $v ) {
+		return 'nextgen' === $v ? 'nextgen' : 'inplace';
+	}
+
+	public static function formats( $v ) {
+		$v   = is_array( $v ) ? $v : array();
+		$out = array();
+		foreach ( array( 'avif', 'webp' ) as $f ) {
+			if ( in_array( $f, $v, true ) ) {
+				$out[] = $f;
+			}
+		}
+		return implode( ',', $out ? $out : array( 'avif' ) );
 	}
 
 	public static function action_links( $links ) {
@@ -130,8 +147,25 @@ class Patu_Settings {
 						</td>
 					</tr>
 					<tr>
+						<th scope="row"><?php esc_html_e( 'Mode', 'patu' ); ?></th>
+						<td>
+							<?php $mode = 'nextgen' === get_option( 'patu_mode', 'inplace' ) ? 'nextgen' : 'inplace'; ?>
+							<label><input type="radio" name="patu_mode" value="inplace" <?php checked( 'inplace', $mode ); ?>> <?php esc_html_e( 'Optimize in place (JPEG and WebP): smaller files, same URLs. The safe default.', 'patu' ); ?></label><br>
+							<label><input type="radio" name="patu_mode" value="nextgen" <?php checked( 'nextgen', $mode ); ?>> <?php esc_html_e( 'Serve next-gen formats (AVIF/WebP): generate modern versions and serve them via a <picture> tag, keeping the original as a fallback. Best savings, and also covers PNG.', 'patu' ); ?></label>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Next-gen formats', 'patu' ); ?></th>
+						<td>
+							<?php $fmts = explode( ',', (string) get_option( 'patu_ng_formats', 'avif,webp' ) ); ?>
+							<label><input type="checkbox" name="patu_ng_formats[]" value="avif" <?php checked( in_array( 'avif', $fmts, true ) ); ?>> <?php esc_html_e( 'AVIF', 'patu' ); ?></label>
+							<label style="margin-left:14px"><input type="checkbox" name="patu_ng_formats[]" value="webp" <?php checked( in_array( 'webp', $fmts, true ) ); ?>> <?php esc_html_e( 'WebP', 'patu' ); ?></label>
+							<p class="description"><?php esc_html_e( 'Used only in next-gen mode. AVIF is the smallest; WebP is a wider-support middle tier.', 'patu' ); ?></p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row"><?php esc_html_e( 'Optimize on upload', 'patu' ); ?></th>
-						<td><label><input type="checkbox" name="patu_auto" value="1" <?php checked( '1', get_option( 'patu_auto', '1' ) ); ?>> <?php esc_html_e( 'Automatically optimize new images as they are uploaded.', 'patu' ); ?></label></td>
+						<td><label><input type="checkbox" name="patu_auto" value="1" <?php checked( '1', get_option( 'patu_auto', '1' ) ); ?>> <?php esc_html_e( 'Automatically process new images as they are uploaded.', 'patu' ); ?></label></td>
 					</tr>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Keep originals', 'patu' ); ?></th>

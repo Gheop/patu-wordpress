@@ -35,23 +35,37 @@ class Patu_Media {
 		if ( 'patu' !== $col ) {
 			return;
 		}
-		if ( ! Patu_Optimizer::is_supported( $id ) ) {
+		$nextgen   = 'nextgen' === patu_mode();
+		$supported = $nextgen ? Patu_Nextgen::is_supported( $id ) : Patu_Optimizer::is_supported( $id );
+		if ( ! $supported ) {
 			echo '<span class="patu-col-none">' . esc_html( '—' ) . '</span>';
 			return;
 		}
-		$can    = current_user_can( 'manage_options' );
-		$status = Patu_Optimizer::status( $id );
+		$can = current_user_can( 'manage_options' );
 
-		if ( ! empty( $status['optimized'] ) ) {
-			printf(
-				'<span class="patu-col-opt">%s</span>',
-				esc_html( sprintf( /* translators: 1: saved size, 2: percent. */ __( 'Saved %1$s (%2$d%%)', 'patu' ), size_format( $status['saved'], 1 ), (int) $status['pct'] ) )
-			);
-			if ( $can && ! empty( $status['restorable'] ) ) {
+		if ( $nextgen ) {
+			$status = Patu_Nextgen::status( $id );
+			$done   = ! empty( $status['generated'] );
+			$label  = $done
+				? sprintf( /* translators: %s: saved size. */ __( 'AVIF/WebP ready, saving %s', 'patu' ), size_format( (int) $status['saved'], 1 ) )
+				: __( 'No next-gen versions', 'patu' );
+			$restorable = $done;
+		} else {
+			$status = Patu_Optimizer::status( $id );
+			$done   = ! empty( $status['optimized'] );
+			$label  = $done
+				? sprintf( /* translators: 1: saved size, 2: percent. */ __( 'Saved %1$s (%2$d%%)', 'patu' ), size_format( (int) $status['saved'], 1 ), (int) $status['pct'] )
+				: __( 'Not optimized', 'patu' );
+			$restorable = $done && ! empty( $status['restorable'] );
+		}
+
+		if ( $done ) {
+			echo '<span class="patu-col-opt">' . esc_html( $label ) . '</span>';
+			if ( $can && $restorable ) {
 				echo '<br>' . self::action_link( 'patu_restore', $id, __( 'Restore', 'patu' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 		} else {
-			echo '<span class="patu-col-none">' . esc_html__( 'Not optimized', 'patu' ) . '</span>';
+			echo '<span class="patu-col-none">' . esc_html( $label ) . '</span>';
 			if ( $can ) {
 				echo '<br>' . self::action_link( 'patu_optimize', $id, __( 'Optimize now', 'patu' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 			}
@@ -67,7 +81,11 @@ class Patu_Media {
 		self::handle(
 			'patu_optimize',
 			function ( $id ) {
-				Patu_Optimizer::optimize_attachment( $id );
+				if ( 'nextgen' === patu_mode() ) {
+					Patu_Nextgen::generate( $id );
+				} else {
+					Patu_Optimizer::optimize_attachment( $id );
+				}
 			}
 		);
 	}
@@ -76,7 +94,11 @@ class Patu_Media {
 		self::handle(
 			'patu_restore',
 			function ( $id ) {
-				Patu_Optimizer::restore_attachment( $id );
+				if ( 'nextgen' === patu_mode() ) {
+					Patu_Nextgen::cleanup( $id );
+				} else {
+					Patu_Optimizer::restore_attachment( $id );
+				}
 			}
 		);
 	}

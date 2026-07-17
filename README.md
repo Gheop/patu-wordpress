@@ -39,16 +39,25 @@ Prefer to keep the key out of the database? Put it in `wp-config.php`:
 define( 'PATU_API_KEY', 'your_key_here' );
 ```
 
-## What v1 covers
+## Two modes
 
-v1 optimizes **JPEG and WebP** images in place, same format. JPEG is the bulk of
-most libraries' weight, and re-encoding it saves roughly a quarter of its size
-with no visible quality change.
+Pick one in **Patu → Settings**:
 
-**Coming next:** PNG and GIF, and WebP/AVIF delivery (serving next-gen formats to
-browsers that support them). These need format conversion and delivery handling
-that has to be rock-solid across themes, so they get their own release rather
-than a rushed one here.
+- **Optimize in place** (default). Re-encodes JPEG and WebP images to a smaller
+  version of the same format, written back over the file. URLs never change, so
+  it works with every theme and page builder. JPEG is the bulk of most
+  libraries' weight, and this saves roughly a quarter of its size with no
+  visible quality change.
+- **Serve next-gen formats** (AVIF/WebP). Generates modern versions of your
+  images (JPEG, PNG and WebP) next to the originals and serves them through a
+  `<picture>` tag, mapping the responsive `srcset` and keeping the original as
+  the fallback for older browsers. The biggest savings, theme-independent
+  (it rewrites the final HTML, so page builders are covered too), and it handles
+  PNG.
+
+Known limitations: GIF is not covered yet, CSS `background-image`s aren't
+rewritten (only `<img>`), and JavaScript-driven lazy-loaders that swap `src` at
+runtime may not get the next-gen version. Native `loading="lazy"` is fine.
 
 ## For developers
 

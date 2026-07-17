@@ -39,6 +39,11 @@ class Patu_Optimizer {
 		return null !== self::format_for_mime( get_post_mime_type( $attachment_id ) );
 	}
 
+	/** Public accessor for a file's per-attachment key (used by the next-gen module). */
+	public static function rel_key( $path ) {
+		return self::rel( $path );
+	}
+
 	/** Absolute paths of the original file plus every generated size. */
 	public static function files_for_attachment( $attachment_id ) {
 		$file = get_attached_file( $attachment_id );

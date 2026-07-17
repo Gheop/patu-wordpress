@@ -4,7 +4,7 @@ Tags: image optimization, compress images, optimize images, webp, performance
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,12 +29,16 @@ with every theme and page builder.
 
 Get a free API key at [patu.dev](https://patu.dev).
 
-**What v1 optimizes:** JPEG and WebP images, in place, same format. JPEG is the
-bulk of most media libraries' weight, and re-encoding it saves roughly a quarter
-of its size with no visible quality change.
+**Two modes:**
 
-**Coming next:** PNG and GIF, and WebP/AVIF delivery (serving next-gen formats to
-browsers that support them).
+* **Optimize in place** (default): re-encodes JPEG and WebP images to a smaller
+  version of the same format. URLs never change, so it works with every theme
+  and page builder. JPEG is the bulk of most libraries' weight, and this saves
+  roughly a quarter of its size with no visible quality change.
+* **Serve next-gen formats** (AVIF/WebP): generates modern versions of your
+  images (JPEG, PNG and WebP) and serves them through a `<picture>` tag, keeping
+  the original as a fallback for older browsers. The biggest savings, and it
+  covers PNG too.
 
 == Installation ==
 
@@ -69,10 +73,11 @@ No. A file is only replaced when the optimized version is strictly smaller, the
 write is atomic, and any API or network error is skipped without touching the
 original or interrupting your upload.
 
-= What about PNG, GIF, and WebP/AVIF delivery? =
+= What about PNG, and AVIF/WebP delivery? =
 
-Those are planned for a future version. v1 focuses on JPEG and WebP because they
-can be optimized in place without changing the file's format or URL.
+Switch to the "Serve next-gen formats" mode. It generates AVIF (and WebP)
+versions of your JPEG, PNG and WebP images and serves them through a `<picture>`
+tag, with the original kept as a fallback. GIF is not covered yet.
 
 = Where does my API key go? =
 
@@ -81,6 +86,11 @@ logged; on the settings page only an administrator can see it, in a masked
 password field.
 
 == Changelog ==
+
+= 0.2.0 =
+* New "Serve next-gen formats" mode: generates AVIF (and WebP) versions of your images and serves them through a <picture> tag, keeping the original as a fallback. Covers PNG too. The in-place mode stays the default.
+* All file operations now go through WP_Filesystem.
+* Licensed GPLv2 or later.
 
 = 0.1.0 =
 * First release: in-place JPEG and WebP optimization, optimize-on-upload, bulk

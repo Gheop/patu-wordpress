@@ -50,17 +50,22 @@ class Patu_Bulk {
 	}
 
 	private static function supported_mimes() {
-		return array( 'image/jpeg', 'image/webp' );
+		return 'nextgen' === patu_mode()
+			? array( 'image/jpeg', 'image/png', 'image/webp' )
+			: array( 'image/jpeg', 'image/webp' );
 	}
 
-	/** IDs of supported attachments: pending (not fully optimized) or already-optimized. */
+	/** IDs of supported attachments: pending (not fully processed) or already-processed. */
 	private static function query_ids( $op ) {
-		// Pending keys on the "done" marker so a partially-optimized attachment
-		// (e.g. one truncated by the on-upload time budget) is still picked up
-		// and finished. Restore keys on the per-file meta.
-		$meta = ( 'restore' === $op )
-			? array( 'key' => Patu_Optimizer::META, 'compare' => 'EXISTS' )
-			: array( 'key' => Patu_Optimizer::DONE, 'compare' => 'NOT EXISTS' );
+		// Pending keys on the "done" marker so a partial run (e.g. one truncated
+		// by the on-upload time budget) is still picked up and finished. Restore
+		// keys on the per-file meta. Both are per-mode.
+		$nextgen  = 'nextgen' === patu_mode();
+		$done_key = $nextgen ? Patu_Nextgen::DONE : Patu_Optimizer::DONE;
+		$meta_key = $nextgen ? Patu_Nextgen::META : Patu_Optimizer::META;
+		$meta     = ( 'restore' === $op )
+			? array( 'key' => $meta_key, 'compare' => 'EXISTS' )
+			: array( 'key' => $done_key, 'compare' => 'NOT EXISTS' );
 		$args = array(
 			'post_type'      => 'attachment',
 			'post_status'    => 'inherit',
@@ -87,17 +92,20 @@ class Patu_Bulk {
 		if ( ! $id ) {
 			wp_send_json_error( array( 'message' => 'bad id' ) );
 		}
-		$title = get_the_title( $id );
+		$title   = get_the_title( $id );
+		$nextgen = 'nextgen' === patu_mode();
 		if ( 'restore' === $op ) {
-			$r = Patu_Optimizer::restore_attachment( $id );
-			wp_send_json_success( array( 'id' => $id, 'title' => $title, 'restored' => $r['restored'] ) );
+			$r        = $nextgen ? Patu_Nextgen::cleanup( $id ) : Patu_Optimizer::restore_attachment( $id );
+			$restored = $nextgen ? $r['deleted'] : $r['restored'];
+			wp_send_json_success( array( 'id' => $id, 'title' => $title, 'restored' => $restored ) );
 		}
-		$r = Patu_Optimizer::optimize_attachment( $id );
+		$r         = $nextgen ? Patu_Nextgen::generate( $id ) : Patu_Optimizer::optimize_attachment( $id );
+		$optimized = $nextgen ? $r['generated'] : $r['optimized'];
 		wp_send_json_success(
 			array(
 				'id'        => $id,
 				'title'     => $title,
-				'optimized' => $r['optimized'],
+				'optimized' => $optimized,
 				'failed'    => $r['failed'],
 				'saved'     => $r['saved'],
 				'skipped'   => isset( $r['skipped'] ) ? $r['skipped'] : '',
