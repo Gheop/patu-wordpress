@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1544 500">
+  <rect width="1544" height="500" fill="#0d0f12"/>
+
+  <!-- faint web strands from the corners -->
+  <g fill="none" stroke="#e0d4c0" stroke-width="2" opacity="0.10" stroke-linecap="round">
+    <path d="M0 0 L470 250"/><path d="M0 60 L470 250"/><path d="M0 130 L470 250"/><path d="M0 210 L470 250"/><path d="M0 300 L470 250"/>
+    <path d="M60 0 L470 250"/><path d="M150 0 L470 250"/><path d="M260 0 L470 250"/>
+    <path d="M470 250 Q240 150 40 40" opacity="0.7"/>
+    <path d="M470 250 Q250 250 30 210" opacity="0.7"/>
+    <path d="M470 250 Q240 350 40 460" opacity="0.7"/>
+    <path d="M1544 500 L1120 250"/><path d="M1544 440 L1120 250"/><path d="M1544 360 L1120 250"/>
+    <path d="M1420 500 L1120 250"/><path d="M1300 500 L1120 250"/>
+  </g>
+
+  <!-- spider mark (from the site favicon, without its background plate) -->
+  <g transform="translate(150 78) scale(2.72)">
+    <g fill="none" stroke="#e0d4c0" stroke-width="5" stroke-linecap="round">
+      <path d="M48 82 Q26 66 13 58"/><path d="M47 87 Q22 82 9 84"/><path d="M49 92 Q24 100 14 110"/><path d="M52 96 Q32 112 24 122"/>
+      <path d="M80 82 Q102 66 115 58"/><path d="M81 87 Q106 82 119 84"/><path d="M79 92 Q104 100 114 110"/><path d="M76 96 Q96 112 104 122"/>
+    </g>
+    <ellipse cx="64" cy="60" rx="41" ry="37" fill="#ece6da"/>
+    <ellipse cx="64" cy="50" rx="32" ry="22" fill="#f5f1e9"/>
+    <ellipse cx="64" cy="86" rx="30" ry="14" fill="#ddd2c0" opacity="0.7"/>
+    <circle cx="52" cy="74" r="13.5" fill="#241710"/><circle cx="76" cy="74" r="13.5" fill="#241710"/>
+    <circle cx="52" cy="74" r="9.5" fill="#d98a45"/><circle cx="76" cy="74" r="9.5" fill="#d98a45"/>
+    <circle cx="52" cy="75" r="5" fill="#19110a"/><circle cx="76" cy="75" r="5" fill="#19110a"/>
+    <circle cx="49" cy="70.5" r="2.4" fill="#fff"/><circle cx="73" cy="70.5" r="2.4" fill="#fff"/>
+  </g>
+
+  <!-- wordmark + tagline -->
+  <text x="560" y="242" font-family="'Inter Display','Inter','DejaVu Sans',sans-serif" font-size="120" letter-spacing="-2">
+    <tspan font-weight="800" fill="#f5f1e9">Patu</tspan><tspan font-weight="400" fill="#b9ad98"> Optimizer</tspan>
+  </text>
+  <text x="562" y="322" font-family="'Inter','DejaVu Sans',sans-serif" font-weight="500" font-size="46" fill="#d98a45" letter-spacing="0.3">Smaller images, same quality, never broken.</text>
+</svg>
