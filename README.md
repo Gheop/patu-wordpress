@@ -70,4 +70,4 @@ live on the webs of larger spiders. It weaves the lightest thread there is. 🕸
 
 ## License
 
-[MIT](./LICENSE).
+[GPLv2 or later](./LICENSE), matching the WordPress ecosystem.

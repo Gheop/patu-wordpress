@@ -7,7 +7,8 @@
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Patu
- * License: MIT
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: patu
  *
  * @package Patu
@@ -25,6 +26,7 @@ define( 'PATU_URL', plugin_dir_url( __FILE__ ) );
 require_once PATU_DIR . 'includes/class-patu-key.php';
 require_once PATU_DIR . 'includes/class-patu-api.php';
 require_once PATU_DIR . 'includes/class-patu-stats.php';
+require_once PATU_DIR . 'includes/class-patu-fs.php';
 require_once PATU_DIR . 'includes/class-patu-optimizer.php';
 require_once PATU_DIR . 'includes/class-patu-upload.php';
 

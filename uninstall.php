@@ -21,20 +21,15 @@ $uploads = wp_get_upload_dir();
 $backups = trailingslashit( $uploads['basedir'] ) . 'patu-originals';
 
 if ( is_dir( $backups ) ) {
-	$stack = array( $backups );
-	$dirs  = array();
-	while ( $stack ) {
-		$dir = array_pop( $stack );
-		$dirs[] = $dir;
-		foreach ( (array) glob( $dir . '/*' ) as $item ) {
-			if ( is_dir( $item ) ) {
-				$stack[] = $item;
-			} else {
-				@unlink( $item );
-			}
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	add_filter(
+		'filesystem_method',
+		function () {
+			return 'direct';
 		}
-	}
-	foreach ( array_reverse( $dirs ) as $dir ) {
-		@rmdir( $dir );
+	);
+	if ( WP_Filesystem() ) {
+		global $wp_filesystem;
+		$wp_filesystem->delete( $backups, true ); // Recursive.
 	}
 }

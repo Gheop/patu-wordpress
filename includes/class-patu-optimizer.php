@@ -97,7 +97,7 @@ class Patu_Optimizer {
 				break; // out of time; the remaining files stay pending for a later run.
 			}
 
-			$orig = @file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			$orig = Patu_FS::read( $path );
 			if ( false === $orig ) {
 				$failed++;
 				continue;
@@ -128,7 +128,7 @@ class Patu_Optimizer {
 				$failed++;
 				continue; // backup required but failed: stay safe.
 			}
-			if ( ! self::write_atomic( $path, $res['bytes'] ) ) {
+			if ( ! Patu_FS::write_atomic( $path, $res['bytes'] ) ) {
 				$failed++;
 				continue;
 			}
@@ -185,9 +185,9 @@ class Patu_Optimizer {
 			$backup = self::backup_path_from_rel( $rel );
 			$target = isset( $info['path'] ) ? $info['path'] : self::path_from_rel( $rel );
 			if ( file_exists( $backup ) ) {
-				$bytes = @file_get_contents( $backup ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-				if ( false !== $bytes && self::write_atomic( $target, $bytes ) ) {
-					@unlink( $backup ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+				$bytes = Patu_FS::read( $backup );
+				if ( false !== $bytes && Patu_FS::write_atomic( $target, $bytes ) ) {
+					Patu_FS::delete( $backup );
 					$restored++;
 					$freed += max( 0, (int) ( isset( $info['orig'] ) ? $info['orig'] : 0 ) - (int) ( isset( $info['opt'] ) ? $info['opt'] : 0 ) );
 					continue;
@@ -285,32 +285,14 @@ class Patu_Optimizer {
 			return false;
 		}
 		self::harden_backup_dir();
-		return false !== @file_put_contents( $bp, $bytes ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		return Patu_FS::put( $bp, $bytes );
 	}
 
 	/** Drop a silent index.php at the backups root so the directory can't be listed. */
 	private static function harden_backup_dir() {
 		$index = self::uploads_basedir() . '/' . self::BACKUP_DIR . '/index.php';
 		if ( ! file_exists( $index ) ) {
-			@file_put_contents( $index, "<?php // Silence is golden.\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			Patu_FS::put( $index, "<?php // Silence is golden.\n" );
 		}
-	}
-
-	/** Write bytes, preserving the file's permissions, via a unique temp file + rename. */
-	private static function write_atomic( $path, $bytes ) {
-		$tmp = $path . '.' . uniqid( 'patu', true ) . '.tmp';
-		if ( false === @file_put_contents( $tmp, $bytes ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
-			return false;
-		}
-		$perms = @fileperms( $path );
-		if ( $perms ) {
-			@chmod( $tmp, $perms & 0777 );
-		}
-		if ( ! @rename( $tmp, $path ) ) {
-			@unlink( $tmp ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-			return false;
-		}
-		clearstatcache( true, $path );
-		return true;
 	}
 }
