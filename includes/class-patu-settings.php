@@ -24,15 +24,15 @@ class Patu_Settings {
 
 	public static function menu() {
 		add_menu_page(
-			__( 'Patu', 'patu' ),
-			__( 'Patu', 'patu' ),
+			__( 'Patu', 'patu-optimizer' ),
+			__( 'Patu', 'patu-optimizer' ),
 			'manage_options',
 			self::PAGE,
 			array( __CLASS__, 'render' ),
 			'dashicons-images-alt2',
 			81
 		);
-		add_submenu_page( self::PAGE, __( 'Patu Settings', 'patu' ), __( 'Settings', 'patu' ), 'manage_options', self::PAGE, array( __CLASS__, 'render' ) );
+		add_submenu_page( self::PAGE, __( 'Patu Settings', 'patu-optimizer' ), __( 'Settings', 'patu-optimizer' ), 'manage_options', self::PAGE, array( __CLASS__, 'render' ) );
 	}
 
 	public static function register() {
@@ -64,7 +64,7 @@ class Patu_Settings {
 
 	public static function action_links( $links ) {
 		$url = admin_url( 'admin.php?page=' . self::PAGE );
-		array_unshift( $links, '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'patu' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'patu-optimizer' ) . '</a>' );
 		return $links;
 	}
 
@@ -81,8 +81,8 @@ class Patu_Settings {
 				'ajax'  => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'patu_test' ),
 				'i18n'  => array(
-					'testing' => __( 'Testing…', 'patu' ),
-					'ok'      => __( 'Connection OK.', 'patu' ),
+					'testing' => __( 'Testing…', 'patu-optimizer' ),
+					'ok'      => __( 'Connection OK.', 'patu-optimizer' ),
 				),
 			)
 		);
@@ -90,7 +90,7 @@ class Patu_Settings {
 
 	public static function ajax_test() {
 		if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'patu_test', 'nonce', false ) ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'patu' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'patu-optimizer' ) ), 403 );
 		}
 		$posted = isset( $_POST['key'] ) ? sanitize_text_field( wp_unslash( $_POST['key'] ) ) : '';
 		if ( '' !== $posted ) {
@@ -102,7 +102,7 @@ class Patu_Settings {
 		if ( is_wp_error( $res ) ) {
 			wp_send_json_error( array( 'message' => $res->get_error_message() ) );
 		}
-		wp_send_json_success( array( 'message' => __( 'Connection OK.', 'patu' ) ) );
+		wp_send_json_success( array( 'message' => __( 'Connection OK.', 'patu-optimizer' ) ) );
 	}
 
 	public static function render() {
@@ -113,32 +113,32 @@ class Patu_Settings {
 		$from_const = Patu_Key::from_constant();
 		?>
 		<div class="wrap patu-wrap">
-			<h1><span class="dashicons dashicons-images-alt2"></span> <?php esc_html_e( 'Patu', 'patu' ); ?></h1>
-			<p class="patu-lede"><?php esc_html_e( 'Optimize your media library through the Patu API. Smaller images, same quality, never bigger, never broken.', 'patu' ); ?></p>
+			<h1><span class="dashicons dashicons-images-alt2"></span> <?php esc_html_e( 'Patu', 'patu-optimizer' ); ?></h1>
+			<p class="patu-lede"><?php esc_html_e( 'Optimize your media library through the Patu API. Smaller images, same quality, never bigger, never broken.', 'patu-optimizer' ); ?></p>
 
 			<div class="patu-stats">
-				<div class="patu-stat"><span class="patu-stat-val"><?php echo esc_html( size_format( $stats['saved'], 1 ) ); ?></span><span class="patu-stat-key"><?php esc_html_e( 'saved', 'patu' ); ?></span></div>
-				<div class="patu-stat"><span class="patu-stat-val"><?php echo esc_html( number_format_i18n( $stats['images'] ) ); ?></span><span class="patu-stat-key"><?php esc_html_e( 'images optimized', 'patu' ); ?></span></div>
+				<div class="patu-stat"><span class="patu-stat-val"><?php echo esc_html( size_format( $stats['saved'], 1 ) ); ?></span><span class="patu-stat-key"><?php esc_html_e( 'saved', 'patu-optimizer' ); ?></span></div>
+				<div class="patu-stat"><span class="patu-stat-val"><?php echo esc_html( number_format_i18n( $stats['images'] ) ); ?></span><span class="patu-stat-key"><?php esc_html_e( 'images optimized', 'patu-optimizer' ); ?></span></div>
 			</div>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'patu_settings' ); ?>
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><label for="patu_api_key"><?php esc_html_e( 'API key', 'patu' ); ?></label></th>
+						<th scope="row"><label for="patu_api_key"><?php esc_html_e( 'API key', 'patu-optimizer' ); ?></label></th>
 						<td>
 							<?php if ( $from_const ) : ?>
-								<input type="text" class="regular-text" value="<?php esc_attr_e( 'Set via the PATU_API_KEY constant', 'patu' ); ?>" disabled>
-								<p class="description"><?php esc_html_e( 'The key comes from the PATU_API_KEY constant in wp-config.php.', 'patu' ); ?></p>
+								<input type="text" class="regular-text" value="<?php esc_attr_e( 'Set via the PATU_API_KEY constant', 'patu-optimizer' ); ?>" disabled>
+								<p class="description"><?php esc_html_e( 'The key comes from the PATU_API_KEY constant in wp-config.php.', 'patu-optimizer' ); ?></p>
 							<?php else : ?>
 								<input type="password" id="patu_api_key" name="patu_api_key" class="regular-text" autocomplete="off" value="<?php echo esc_attr( get_option( 'patu_api_key', '' ) ); ?>">
-								<button type="button" class="button" id="patu-test"><?php esc_html_e( 'Test connection', 'patu' ); ?></button>
+								<button type="button" class="button" id="patu-test"><?php esc_html_e( 'Test connection', 'patu-optimizer' ); ?></button>
 								<span id="patu-test-result" class="patu-test-result"></span>
 								<p class="description">
 									<?php
 									printf(
 										/* translators: %s: patu.dev signup URL. */
-										wp_kses( __( 'Get a free key at <a href="%s" target="_blank" rel="noopener">patu.dev</a>.', 'patu' ), array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) ) ),
+										wp_kses( __( 'Get a free key at <a href="%s" target="_blank" rel="noopener">patu.dev</a>.', 'patu-optimizer' ), array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) ) ),
 										'https://patu.dev'
 									);
 									?>
@@ -147,36 +147,36 @@ class Patu_Settings {
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Mode', 'patu' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Mode', 'patu-optimizer' ); ?></th>
 						<td>
 							<?php $mode = 'nextgen' === get_option( 'patu_mode', 'inplace' ) ? 'nextgen' : 'inplace'; ?>
-							<label><input type="radio" name="patu_mode" value="inplace" <?php checked( 'inplace', $mode ); ?>> <?php esc_html_e( 'Optimize in place (JPEG and WebP): smaller files, same URLs. The safe default.', 'patu' ); ?></label><br>
-							<label><input type="radio" name="patu_mode" value="nextgen" <?php checked( 'nextgen', $mode ); ?>> <?php esc_html_e( 'Serve next-gen formats (AVIF/WebP): generate modern versions and serve them via a <picture> tag, keeping the original as a fallback. Best savings, and also covers PNG.', 'patu' ); ?></label>
+							<label><input type="radio" name="patu_mode" value="inplace" <?php checked( 'inplace', $mode ); ?>> <?php esc_html_e( 'Optimize in place (JPEG and WebP): smaller files, same URLs. The safe default.', 'patu-optimizer' ); ?></label><br>
+							<label><input type="radio" name="patu_mode" value="nextgen" <?php checked( 'nextgen', $mode ); ?>> <?php esc_html_e( 'Serve next-gen formats (AVIF/WebP): generate modern versions and serve them via a <picture> tag, keeping the original as a fallback. Best savings, and also covers PNG.', 'patu-optimizer' ); ?></label>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Next-gen formats', 'patu' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Next-gen formats', 'patu-optimizer' ); ?></th>
 						<td>
 							<?php $fmts = explode( ',', (string) get_option( 'patu_ng_formats', 'avif,webp' ) ); ?>
-							<label><input type="checkbox" name="patu_ng_formats[]" value="avif" <?php checked( in_array( 'avif', $fmts, true ) ); ?>> <?php esc_html_e( 'AVIF', 'patu' ); ?></label>
-							<label style="margin-left:14px"><input type="checkbox" name="patu_ng_formats[]" value="webp" <?php checked( in_array( 'webp', $fmts, true ) ); ?>> <?php esc_html_e( 'WebP', 'patu' ); ?></label>
-							<p class="description"><?php esc_html_e( 'Used only in next-gen mode. AVIF is the smallest; WebP is a wider-support middle tier.', 'patu' ); ?></p>
+							<label><input type="checkbox" name="patu_ng_formats[]" value="avif" <?php checked( in_array( 'avif', $fmts, true ) ); ?>> <?php esc_html_e( 'AVIF', 'patu-optimizer' ); ?></label>
+							<label style="margin-left:14px"><input type="checkbox" name="patu_ng_formats[]" value="webp" <?php checked( in_array( 'webp', $fmts, true ) ); ?>> <?php esc_html_e( 'WebP', 'patu-optimizer' ); ?></label>
+							<p class="description"><?php esc_html_e( 'Used only in next-gen mode. AVIF is the smallest; WebP is a wider-support middle tier.', 'patu-optimizer' ); ?></p>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Optimize on upload', 'patu' ); ?></th>
-						<td><label><input type="checkbox" name="patu_auto" value="1" <?php checked( '1', get_option( 'patu_auto', '1' ) ); ?>> <?php esc_html_e( 'Automatically process new images as they are uploaded.', 'patu' ); ?></label></td>
+						<th scope="row"><?php esc_html_e( 'Optimize on upload', 'patu-optimizer' ); ?></th>
+						<td><label><input type="checkbox" name="patu_auto" value="1" <?php checked( '1', get_option( 'patu_auto', '1' ) ); ?>> <?php esc_html_e( 'Automatically process new images as they are uploaded.', 'patu-optimizer' ); ?></label></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Keep originals', 'patu' ); ?></th>
-						<td><label><input type="checkbox" name="patu_backup" value="1" <?php checked( '1', get_option( 'patu_backup', '1' ) ); ?>> <?php esc_html_e( 'Back up original images so they can be restored. Recommended.', 'patu' ); ?></label></td>
+						<th scope="row"><?php esc_html_e( 'Keep originals', 'patu-optimizer' ); ?></th>
+						<td><label><input type="checkbox" name="patu_backup" value="1" <?php checked( '1', get_option( 'patu_backup', '1' ) ); ?>> <?php esc_html_e( 'Back up original images so they can be restored. Recommended.', 'patu-optimizer' ); ?></label></td>
 					</tr>
 				</table>
 				<?php submit_button(); ?>
 			</form>
 
-			<p><a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=patu-bulk' ) ); ?>"><?php esc_html_e( 'Bulk optimize your library →', 'patu' ); ?></a></p>
-			<p class="description"><?php esc_html_e( 'v1 optimizes JPEG and WebP images in place. PNG and GIF, and WebP/AVIF delivery, are coming next.', 'patu' ); ?></p>
+			<p><a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=patu-bulk' ) ); ?>"><?php esc_html_e( 'Bulk optimize your library →', 'patu-optimizer' ); ?></a></p>
+			<p class="description"><?php esc_html_e( 'v1 optimizes JPEG and WebP images in place. PNG and GIF, and WebP/AVIF delivery, are coming next.', 'patu-optimizer' ); ?></p>
 		</div>
 		<?php
 	}

@@ -29,7 +29,7 @@ class Patu_API {
 	public static function compress( $bytes, $content_type, $format, $timeout = null ) {
 		$key = Patu_Key::get();
 		if ( '' === $key ) {
-			return new WP_Error( 'patu_no_key', __( 'No Patu API key configured.', 'patu' ) );
+			return new WP_Error( 'patu_no_key', __( 'No Patu API key configured.', 'patu-optimizer' ) );
 		}
 
 		$endpoint = untrailingslashit( (string) apply_filters( 'patu_endpoint', self::ENDPOINT ) );
@@ -60,13 +60,13 @@ class Patu_API {
 			return new WP_Error(
 				'patu_http_' . $code,
 				/* translators: 1: HTTP status code, 2: response body. */
-				sprintf( __( 'Patu API returned HTTP %1$d: %2$s', 'patu' ), $code, mb_substr( $body, 0, 200 ) )
+				sprintf( __( 'Patu API returned HTTP %1$d: %2$s', 'patu-optimizer' ), $code, mb_substr( $body, 0, 200 ) )
 			);
 		}
 
 		$out = (string) wp_remote_retrieve_body( $res );
 		if ( '' === $out ) {
-			return new WP_Error( 'patu_empty', __( 'Patu API returned an empty body.', 'patu' ) );
+			return new WP_Error( 'patu_empty', __( 'Patu API returned an empty body.', 'patu-optimizer' ) );
 		}
 
 		return array(
@@ -86,7 +86,7 @@ class Patu_API {
 	public static function test_connection() {
 		$jpeg = base64_decode( self::SAMPLE_JPEG_B64, true );
 		if ( false === $jpeg ) {
-			return new WP_Error( 'patu_internal', __( 'Could not build a test image.', 'patu' ) );
+			return new WP_Error( 'patu_internal', __( 'Could not build a test image.', 'patu-optimizer' ) );
 		}
 		$res = self::compress( $jpeg, 'image/jpeg', 'jpeg', 15 );
 		return is_wp_error( $res ) ? $res : true;

@@ -41,7 +41,7 @@ class Patu_Upload {
 		} catch ( \Throwable $e ) {
 			// Never break an upload: the original files are kept as they are.
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Patu: optimize on upload failed: ' . $e->getMessage() );
+				error_log( 'Patu: optimize on upload failed: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- WP_DEBUG-gated diagnostic only.
 			}
 		}
 		return $metadata; // Files shrank in place; the metadata is unchanged.

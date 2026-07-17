@@ -27,7 +27,7 @@ class Patu_Media {
 	}
 
 	public static function column( $cols ) {
-		$cols['patu'] = __( 'Patu', 'patu' );
+		$cols['patu'] = __( 'Patu', 'patu-optimizer' );
 		return $cols;
 	}
 
@@ -47,27 +47,27 @@ class Patu_Media {
 			$status = Patu_Nextgen::status( $id );
 			$done   = ! empty( $status['generated'] );
 			$label  = $done
-				? sprintf( /* translators: %s: saved size. */ __( 'AVIF/WebP ready, saving %s', 'patu' ), size_format( (int) $status['saved'], 1 ) )
-				: __( 'No next-gen versions', 'patu' );
+				? sprintf( /* translators: %s: saved size. */ __( 'AVIF/WebP ready, saving %s', 'patu-optimizer' ), size_format( (int) $status['saved'], 1 ) )
+				: __( 'No next-gen versions', 'patu-optimizer' );
 			$restorable = $done;
 		} else {
 			$status = Patu_Optimizer::status( $id );
 			$done   = ! empty( $status['optimized'] );
 			$label  = $done
-				? sprintf( /* translators: 1: saved size, 2: percent. */ __( 'Saved %1$s (%2$d%%)', 'patu' ), size_format( (int) $status['saved'], 1 ), (int) $status['pct'] )
-				: __( 'Not optimized', 'patu' );
+				? sprintf( /* translators: 1: saved size, 2: percent. */ __( 'Saved %1$s (%2$d%%)', 'patu-optimizer' ), size_format( (int) $status['saved'], 1 ), (int) $status['pct'] )
+				: __( 'Not optimized', 'patu-optimizer' );
 			$restorable = $done && ! empty( $status['restorable'] );
 		}
 
 		if ( $done ) {
 			echo '<span class="patu-col-opt">' . esc_html( $label ) . '</span>';
 			if ( $can && $restorable ) {
-				echo '<br>' . self::action_link( 'patu_restore', $id, __( 'Restore', 'patu' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+				echo '<br>' . self::action_link( 'patu_restore', $id, __( 'Restore', 'patu-optimizer' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 		} else {
 			echo '<span class="patu-col-none">' . esc_html( $label ) . '</span>';
 			if ( $can ) {
-				echo '<br>' . self::action_link( 'patu_optimize', $id, __( 'Optimize now', 'patu' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+				echo '<br>' . self::action_link( 'patu_optimize', $id, __( 'Optimize now', 'patu-optimizer' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 			}
 		}
 	}
@@ -107,7 +107,7 @@ class Patu_Media {
 		$id = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 		if ( ! current_user_can( 'manage_options' ) || ! $id || ! wp_verify_nonce( $nonce, $action . '_' . $id ) ) {
-			wp_die( esc_html__( 'Permission denied.', 'patu' ) );
+			wp_die( esc_html__( 'Permission denied.', 'patu-optimizer' ) );
 		}
 		$fn( $id );
 		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'upload.php' ) );

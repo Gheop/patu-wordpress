@@ -24,7 +24,7 @@ class Patu_Bulk {
 	}
 
 	public static function menu() {
-		add_submenu_page( 'patu', __( 'Bulk Optimize', 'patu' ), __( 'Bulk Optimize', 'patu' ), 'manage_options', self::PAGE, array( __CLASS__, 'render' ) );
+		add_submenu_page( 'patu', __( 'Bulk Optimize', 'patu-optimizer' ), __( 'Bulk Optimize', 'patu-optimizer' ), 'manage_options', self::PAGE, array( __CLASS__, 'render' ) );
 	}
 
 	public static function assets( $hook ) {
@@ -40,10 +40,10 @@ class Patu_Bulk {
 				'ajax'  => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'patu_bulk' ),
 				'i18n'  => array(
-					'scanning' => __( 'Scanning…', 'patu' ),
-					'none'     => __( 'Nothing to do.', 'patu' ),
-					'done'     => __( 'Done.', 'patu' ),
-					'saved'    => __( 'saved', 'patu' ),
+					'scanning' => __( 'Scanning…', 'patu-optimizer' ),
+					'none'     => __( 'Nothing to do.', 'patu-optimizer' ),
+					'done'     => __( 'Done.', 'patu-optimizer' ),
+					'saved'    => __( 'saved', 'patu-optimizer' ),
 				),
 			)
 		);
@@ -81,13 +81,16 @@ class Patu_Bulk {
 
 	public static function ajax_ids() {
 		self::guard();
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in guard() before any $_POST read.
 		$op = ( isset( $_POST['op'] ) && 'restore' === sanitize_key( wp_unslash( $_POST['op'] ) ) ) ? 'restore' : 'optimize';
 		wp_send_json_success( array( 'ids' => self::query_ids( $op ) ) );
 	}
 
 	public static function ajax_one() {
 		self::guard();
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in guard() before any $_POST read.
 		$id = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in guard() before any $_POST read.
 		$op = ( isset( $_POST['op'] ) && 'restore' === sanitize_key( wp_unslash( $_POST['op'] ) ) ) ? 'restore' : 'optimize';
 		if ( ! $id ) {
 			wp_send_json_error( array( 'message' => 'bad id' ) );
@@ -115,7 +118,7 @@ class Patu_Bulk {
 
 	private static function guard() {
 		if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'patu_bulk', 'nonce', false ) ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'patu' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'patu-optimizer' ) ), 403 );
 		}
 	}
 
@@ -127,12 +130,12 @@ class Patu_Bulk {
 		$optimized  = count( self::query_ids( 'restore' ) );
 		?>
 		<div class="wrap patu-wrap">
-			<h1><?php esc_html_e( 'Bulk Optimize', 'patu' ); ?></h1>
+			<h1><?php esc_html_e( 'Bulk Optimize', 'patu-optimizer' ); ?></h1>
 			<p class="patu-lede">
 				<?php
 				printf(
 					/* translators: 1: pending count, 2: optimized count. */
-					esc_html__( '%1$s images to optimize, %2$s already optimized. JPEG and WebP only in v1.', 'patu' ),
+					esc_html__( '%1$s images to optimize, %2$s already optimized. JPEG and WebP only in v1.', 'patu-optimizer' ),
 					'<strong>' . esc_html( number_format_i18n( $pending ) ) . '</strong>', // phpcs:ignore WordPress.Security.EscapeOutput
 					'<strong>' . esc_html( number_format_i18n( $optimized ) ) . '</strong>' // phpcs:ignore WordPress.Security.EscapeOutput
 				);
@@ -140,9 +143,9 @@ class Patu_Bulk {
 			</p>
 
 			<p>
-				<button class="button button-primary" id="patu-bulk-optimize" <?php disabled( 0, $pending ); ?>><?php esc_html_e( 'Optimize all', 'patu' ); ?></button>
-				<button class="button" id="patu-bulk-restore" <?php disabled( 0, $optimized ); ?>><?php esc_html_e( 'Restore all', 'patu' ); ?></button>
-				<button class="button" id="patu-bulk-stop" style="display:none"><?php esc_html_e( 'Stop', 'patu' ); ?></button>
+				<button class="button button-primary" id="patu-bulk-optimize" <?php disabled( 0, $pending ); ?>><?php esc_html_e( 'Optimize all', 'patu-optimizer' ); ?></button>
+				<button class="button" id="patu-bulk-restore" <?php disabled( 0, $optimized ); ?>><?php esc_html_e( 'Restore all', 'patu-optimizer' ); ?></button>
+				<button class="button" id="patu-bulk-stop" style="display:none"><?php esc_html_e( 'Stop', 'patu-optimizer' ); ?></button>
 			</p>
 
 			<div class="patu-bulk-bar" style="display:none"><div class="patu-bulk-fill" id="patu-bulk-fill"></div></div>

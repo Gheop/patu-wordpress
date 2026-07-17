@@ -4,8 +4,9 @@
  * work. It forces the "direct" method: the uploads directory is always directly
  * writable when media upload works, and a non-interactive optimize (upload hook
  * or AJAX) cannot prompt for FTP/SSH credentials. If WP_Filesystem cannot be
- * initialized as direct, it falls back to native PHP calls so the plugin still
- * functions, and never fatals.
+ * initialized as direct, every operation degrades to a no-op (read/exists
+ * return false, writes return false) so the plugin skips the work rather than
+ * bypassing WP_Filesystem — it never fatals and never corrupts a file.
  *
  * @package Patu
  */
@@ -42,35 +43,26 @@ class Patu_FS {
 	/** @return string|false */
 	public static function read( $path ) {
 		$fs = self::fs();
-		if ( $fs ) {
-			$c = $fs->get_contents( $path );
-			return false === $c ? false : $c;
+		if ( ! $fs ) {
+			return false;
 		}
-		return @file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$c = $fs->get_contents( $path );
+		return false === $c ? false : $c;
 	}
 
 	public static function put( $path, $bytes ) {
 		$fs = self::fs();
-		if ( $fs ) {
-			return (bool) $fs->put_contents( $path, $bytes, FS_CHMOD_FILE );
-		}
-		return false !== @file_put_contents( $path, $bytes ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		return $fs ? (bool) $fs->put_contents( $path, $bytes, FS_CHMOD_FILE ) : false;
 	}
 
 	public static function delete( $path ) {
 		$fs = self::fs();
-		if ( $fs ) {
-			return (bool) $fs->delete( $path );
-		}
-		return @unlink( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		return $fs ? (bool) $fs->delete( $path ) : false;
 	}
 
 	public static function exists( $path ) {
 		$fs = self::fs();
-		if ( $fs ) {
-			return (bool) $fs->exists( $path );
-		}
-		return file_exists( $path );
+		return $fs ? (bool) $fs->exists( $path ) : false;
 	}
 
 	/**
@@ -79,31 +71,16 @@ class Patu_FS {
 	 * half-written).
 	 */
 	public static function write_atomic( $path, $bytes ) {
-		$fs  = self::fs();
-		$tmp = $path . '.' . uniqid( 'patu', true ) . '.tmp';
-
-		if ( $fs ) {
-			if ( ! $fs->put_contents( $tmp, $bytes, FS_CHMOD_FILE ) ) {
-				return false;
-			}
-			if ( ! $fs->move( $tmp, $path, true ) ) {
-				$fs->delete( $tmp );
-				return false;
-			}
-			clearstatcache( true, $path );
-			return true;
-		}
-
-		// Native fallback (preserves the original file's permissions).
-		$perms = @fileperms( $path );
-		if ( false === @file_put_contents( $tmp, $bytes ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$fs = self::fs();
+		if ( ! $fs ) {
 			return false;
 		}
-		if ( $perms ) {
-			@chmod( $tmp, $perms & 0777 );
+		$tmp = $path . '.' . uniqid( 'patu', true ) . '.tmp';
+		if ( ! $fs->put_contents( $tmp, $bytes, FS_CHMOD_FILE ) ) {
+			return false;
 		}
-		if ( ! @rename( $tmp, $path ) ) {
-			@unlink( $tmp ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		if ( ! $fs->move( $tmp, $path, true ) ) {
+			$fs->delete( $tmp );
 			return false;
 		}
 		clearstatcache( true, $path );

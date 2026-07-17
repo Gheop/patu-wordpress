@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Patu
+ * Plugin Name: Patu Optimizer
  * Plugin URI: https://patu.dev
  * Description: Optimize your media library through the Patu API. Smaller images, same quality, never bigger, never broken.
  * Version: 0.2.0
@@ -9,7 +9,7 @@
  * Author: Patu
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: patu
+ * Text Domain: patu-optimizer
  *
  * @package Patu
  */
