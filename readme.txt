@@ -40,10 +40,30 @@ Get a free API key at [patu.dev](https://patu.dev).
   the original as a fallback for older browsers. The biggest savings, and it
   covers PNG too.
 
+== External service ==
+
+This plugin relies on the Patu image-optimization API to do the actual
+compression. It is the core function of the plugin and it cannot work without
+it.
+
+- **What is sent, and when:** the image files you optimize (on upload if
+  auto-optimize is on, or when you run a bulk optimize / next-gen generate),
+  plus your API key in the `X-Api-Key` header. A small built-in sample image is
+  also sent when you click "Test connection". Everything goes over HTTPS to
+  `https://patu.dev`.
+- **What comes back:** the optimized image bytes. Nothing else about your site
+  (its content, users, or any personal data) is sent — only the image itself.
+
+The service is operated by Patu (https://patu.dev). By using it you agree to its
+terms and privacy policy:
+
+- Terms of service: https://patu.dev/terms
+- Privacy policy: https://patu.dev/privacy
+
 == Installation ==
 
-1. Upload the `patu` folder to `/wp-content/plugins/`, or install the plugin
-   through the Plugins screen.
+1. Upload the `patu-optimizer` folder to `/wp-content/plugins/`, or install the
+   plugin through the Plugins screen.
 2. Activate it through the Plugins screen.
 3. Go to **Patu → Settings**, paste your API key from
    [patu.dev](https://patu.dev), and click **Test connection**.

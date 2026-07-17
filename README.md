@@ -59,6 +59,15 @@ Known limitations: GIF is not covered yet, CSS `background-image`s aren't
 rewritten (only `<img>`), and JavaScript-driven lazy-loaders that swap `src` at
 runtime may not get the next-gen version. Native `loading="lazy"` is fine.
 
+## External service & privacy
+
+The compression itself runs on the Patu API, so the plugin sends your images
+there. When you optimize an image (on upload, or via a bulk run) it uploads the
+image bytes and your API key over HTTPS to [patu.dev](https://patu.dev) and gets
+the optimized bytes back. Only the image is sent — none of your site's content,
+users, or other data. By using it you agree to the Patu
+[terms](https://patu.dev/terms) and [privacy policy](https://patu.dev/privacy).
+
 ## For developers
 
 The plugin is plain, dependency-free PHP built on WordPress's own APIs. A few
