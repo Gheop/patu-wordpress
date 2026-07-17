@@ -31,7 +31,7 @@ class Patu_Optimizer {
 			case 'image/webp':
 				return 'webp';
 			default:
-				return null; // png / gif / etc. — v1 leaves them untouched.
+				return null; // png / gif / etc.; v1 leaves them untouched.
 		}
 	}
 
@@ -96,7 +96,7 @@ class Patu_Optimizer {
 			}
 			$rel = self::rel( $path );
 			if ( isset( $meta['files'][ $rel ] ) ) {
-				continue; // already processed — don't re-hit the API.
+				continue; // already processed; don't re-hit the API.
 			}
 			if ( $budget > 0 && ( microtime( true ) - $start ) >= $budget ) {
 				break; // out of time; the remaining files stay pending for a later run.

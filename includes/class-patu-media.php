@@ -38,7 +38,7 @@ class Patu_Media {
 		$nextgen   = 'nextgen' === patu_mode();
 		$supported = $nextgen ? Patu_Nextgen::is_supported( $id ) : Patu_Optimizer::is_supported( $id );
 		if ( ! $supported ) {
-			echo '<span class="patu-col-none">' . esc_html( '—' ) . '</span>';
+			echo '<span class="patu-col-none">' . esc_html( '–' ) . '</span>';
 			return;
 		}
 		$can = current_user_can( 'manage_options' );

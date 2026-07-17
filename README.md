@@ -64,7 +64,7 @@ runtime may not get the next-gen version. Native `loading="lazy"` is fine.
 The compression itself runs on the Patu API, so the plugin sends your images
 there. When you optimize an image (on upload, or via a bulk run) it uploads the
 image bytes and your API key over HTTPS to [patu.dev](https://patu.dev) and gets
-the optimized bytes back. Only the image is sent — none of your site's content,
+the optimized bytes back. Only the image is sent, never your site's content,
 users, or other data. By using it you agree to the Patu
 [terms](https://patu.dev/terms) and [privacy policy](https://patu.dev/privacy).
 
@@ -73,10 +73,10 @@ users, or other data. By using it you agree to the Patu
 The plugin is plain, dependency-free PHP built on WordPress's own APIs. A few
 filters let you tune it:
 
-- `patu_resolved_key` — override the API key at runtime.
-- `patu_endpoint` — point at a self-hosted or staging Patu endpoint.
-- `patu_timeout` — the per-request timeout (default 30s).
-- `patu_backup` — force backups on or off.
+- `patu_resolved_key`: override the API key at runtime.
+- `patu_endpoint`: point at a self-hosted or staging Patu endpoint.
+- `patu_timeout`: the per-request timeout (default 30s).
+- `patu_backup`: force backups on or off.
 
 A local test setup (WordPress + MariaDB + WP-CLI via docker-compose) and the
 integration test scripts live in this repo.

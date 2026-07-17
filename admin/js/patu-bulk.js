@@ -86,24 +86,24 @@
 					if ( r && r.success ) {
 						var d = r.data;
 						if ( op === 'restore' ) {
-							log( 'ok', ( d.title || ( '#' + d.id ) ) + ' — restored' );
+							log( 'ok', ( d.title || ( '#' + d.id ) ) + ': restored' );
 						} else if ( d.skipped ) {
-							log( 'skip', ( d.title || ( '#' + d.id ) ) + ' — skipped' );
+							log( 'skip', ( d.title || ( '#' + d.id ) ) + ': skipped' );
 						} else if ( d.failed > 0 && d.optimized === 0 ) {
-							log( 'err', ( d.title || ( '#' + d.id ) ) + ' — failed' );
+							log( 'err', ( d.title || ( '#' + d.id ) ) + ': failed' );
 						} else {
 							savedTotal += ( d.saved || 0 );
-							log( 'ok', ( d.title || ( '#' + d.id ) ) + ' — ' + human( d.saved || 0 ) + ' ' + PatuBulk.i18n.saved );
+							log( 'ok', ( d.title || ( '#' + d.id ) ) + ': ' + human( d.saved || 0 ) + ' ' + PatuBulk.i18n.saved );
 						}
 					} else {
-						log( 'err', '#' + id + ' — error' );
+						log( 'err', '#' + id + ': error' );
 					}
 					fill.style.width = Math.round( ( doneCount / total ) * 100 ) + '%';
 					statusEl.textContent = doneCount + ' / ' + total + '  (' + human( savedTotal ) + ' ' + PatuBulk.i18n.saved + ')';
 					step();
 				} ).catch( function () {
 					doneCount++;
-					log( 'err', '#' + id + ' — request failed' );
+					log( 'err', '#' + id + ': request failed' );
 					step();
 				} );
 			}

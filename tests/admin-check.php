@@ -36,7 +36,7 @@ function mk_jpeg( $name ) {
 	$bytes = ob_get_clean();
 	$up    = wp_upload_bits( $name, null, $bytes );
 	$id    = wp_insert_attachment( array( 'post_mime_type' => 'image/jpeg', 'post_title' => $name, 'post_status' => 'inherit' ), $up['file'] );
-	// Triggers the wp_generate_attachment_metadata filter — i.e. the auto hook.
+	// Triggers the wp_generate_attachment_metadata filter; i.e. the auto hook.
 	$meta = wp_generate_attachment_metadata( $id, $up['file'] );
 	wp_update_attachment_metadata( $id, $meta );
 	return $id;

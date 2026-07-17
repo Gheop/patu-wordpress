@@ -1,6 +1,6 @@
 # WordPress.org directory assets
 
-These are the assets for the plugin's page on wordpress.org — **not** part of the
+These are the assets for the plugin's page on wordpress.org, **not** part of the
 plugin itself. They are never bundled in `patu.zip`; after the plugin is
 approved they go into the SVN **`/assets/`** directory (a sibling of `/trunk/`),
 not into `/trunk/`.

@@ -17,15 +17,15 @@ through the [Patu](https://patu.dev) optimization API. It works in place and
 keeps the same format and dimensions, so your URLs never change and it works
 with every theme and page builder.
 
-* **Automatic** — new uploads are optimized as they come in, across every
+* **Automatic**: new uploads are optimized as they come in, across every
   generated size (thumbnail, medium, large, full).
-* **Bulk** — optimize your entire existing library from one screen, with a live
+* **Bulk**: optimize your entire existing library from one screen, with a live
   progress bar.
-* **Safe** — a file is only replaced when the optimized version is strictly
+* **Safe**: a file is only replaced when the optimized version is strictly
   smaller (never bigger), a failed optimization never blocks an upload or breaks
   your site (never broken), and originals are backed up so you can restore any
   image with one click.
-* **Private** — your API key is only ever sent to patu.dev in a request header.
+* **Private**: your API key is only ever sent to patu.dev in a request header.
 
 Get a free API key at [patu.dev](https://patu.dev).
 
@@ -52,7 +52,7 @@ it.
   also sent when you click "Test connection". Everything goes over HTTPS to
   `https://patu.dev`.
 - **What comes back:** the optimized image bytes. Nothing else about your site
-  (its content, users, or any personal data) is sent — only the image itself.
+  (its content, users, or any personal data) is sent, only the image itself.
 
 The service is operated by Patu (https://patu.dev). By using it you agree to its
 terms and privacy policy:

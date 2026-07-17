@@ -100,7 +100,7 @@ class Patu_Rewrite {
 		}
 		$avif = self::sibling_url( $src, 'avif' );
 		if ( '' === $avif ) {
-			return $tag; // no next-gen sibling — leave it exactly as it was.
+			return $tag; // no next-gen sibling; leave it exactly as it was.
 		}
 
 		$sizes  = self::attr( $tag, 'sizes' );
@@ -140,7 +140,7 @@ class Patu_Rewrite {
 			$bits = preg_split( '/\s+/', $part, 2 );
 			$sib  = self::sibling_url( $bits[0], $fmt );
 			if ( '' === $sib ) {
-				return $single; // one candidate has no sibling — don't risk a broken srcset.
+				return $single; // one candidate has no sibling; don't risk a broken srcset.
 			}
 			$out[] = $sib . ( isset( $bits[1] ) ? ' ' . $bits[1] : '' );
 		}

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Run Plugin Check against the DISTRIBUTED package, in a folder named like the
-# real slug (patu-optimizer) — NOT the dev dir. The dev dir contains tests/,
+# real slug (patu-optimizer); NOT the dev dir. The dev dir contains tests/,
 # build.sh, .github, etc. that never ship, and its folder name (patu) doesn't
 # match the text domain, so checking it reports noise. This checks what the
 # review team actually sees.

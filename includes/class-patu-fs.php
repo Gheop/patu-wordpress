@@ -6,7 +6,7 @@
  * or AJAX) cannot prompt for FTP/SSH credentials. If WP_Filesystem cannot be
  * initialized as direct, every operation degrades to a no-op (read/exists
  * return false, writes return false) so the plugin skips the work rather than
- * bypassing WP_Filesystem — it never fatals and never corrupts a file.
+ * bypassing WP_Filesystem; it never fatals and never corrupts a file.
  *
  * @package Patu
  */
