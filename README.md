@@ -5,6 +5,8 @@ straight from wp-admin. New uploads are optimized automatically, your existing
 library in one bulk pass. Same URLs, same quality, never bigger, never breaks
 your site.
 
+**Available on the [WordPress.org plugin directory](https://wordpress.org/plugins/patu-optimizer/).**
+
 ## What it does
 
 WordPress makes several sized copies of every image you upload (thumbnail,
@@ -27,7 +29,10 @@ every page builder.
 
 ## Setup
 
-1. Install and activate the plugin.
+1. Install **Patu Optimizer** from **Plugins → Add New** in wp-admin (search for
+   "Patu"), or download it from the
+   [WordPress.org listing](https://wordpress.org/plugins/patu-optimizer/), and
+   activate it.
 2. Open **Patu → Settings**, paste a free key from [patu.dev](https://patu.dev),
    and hit **Test connection**.
 3. That's it. New uploads optimize themselves. For everything already in your
