@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Patu Optimizer
+ * Plugin Name: Patu Optimizer – Compress Images to WebP & AVIF
  * Plugin URI: https://patu.dev
- * Description: Optimize your media library through the Patu API. Smaller images, same quality, never bigger, never broken.
- * Version: 0.2.0
+ * Description: Compress and convert your media library to WebP and AVIF. Same quality, smaller files, never bigger, never broken.
+ * Version: 0.2.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Patu
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PATU_VERSION', '0.2.0' );
+define( 'PATU_VERSION', '0.2.1' );
 define( 'PATU_FILE', __FILE__ );
 define( 'PATU_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PATU_URL', plugin_dir_url( __FILE__ ) );

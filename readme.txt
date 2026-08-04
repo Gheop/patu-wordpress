@@ -1,14 +1,14 @@
-=== Patu Optimizer ===
+=== Patu Optimizer – Compress Images to WebP & AVIF ===
 Contributors: gheop
-Tags: image optimization, compress images, optimize images, webp, performance
+Tags: compress images, optimize images, webp, avif, image optimization
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Optimize your media library's JPEG and WebP images through the Patu API. Smaller files, same quality, never bigger, never broken.
+Compress and convert your media library to WebP and AVIF. Same quality, smaller files, never bigger, never broken. Free API key.
 
 == Description ==
 
@@ -105,7 +105,16 @@ Only to patu.dev, and only in the `X-Api-Key` request header. It is never
 logged; on the settings page only an administrator can see it, in a masked
 password field.
 
+== Screenshots ==
+
+1. Your media library, with the space saved on every image shown in the Patu column.
+2. One-click bulk optimize, with a live progress bar and the saving for each file.
+3. Settings: paste your API key, choose in-place or next-gen delivery, and keep a backup of every original.
+
 == Changelog ==
+
+= 0.2.1 =
+* Listing metadata only, no functional change: clearer title and description that surface WebP and AVIF, refreshed search tags, and tested up to WordPress 7.0.
 
 = 0.2.0 =
 * New "Serve next-gen formats" mode: generates AVIF (and WebP) versions of your images and serves them through a <picture> tag, keeping the original as a fallback. Covers PNG too. The in-place mode stays the default.

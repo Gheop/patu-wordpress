@@ -94,3 +94,19 @@ live on the webs of larger spiders. It weaves the lightest thread there is. 🕸
 ## License
 
 [GPLv2 or later](./LICENSE), matching the WordPress ecosystem.
+
+## Changelog
+
+### v0.2.1 — Listing metadata refresh (2026-08-04)
+
+- Clearer title and description that surface WebP and AVIF, refreshed search tags, tested up to WordPress 7.0. No functional change.
+
+### v0.2.0 — Next-gen AVIF/WebP delivery (2026-07-17)
+
+- New "Serve next-gen formats" mode: AVIF/WebP siblings served through a `<picture>` tag, covering PNG too. In-place mode stays the default.
+- All file operations go through WP_Filesystem.
+- Relicensed GPLv2 or later.
+
+### v0.1.0 — First release (2026-07-14)
+
+- In-place JPEG and WebP optimization, optimize-on-upload, bulk optimize with a progress bar, per-image and bulk restore, a media-library column, a connection test, and stats.
