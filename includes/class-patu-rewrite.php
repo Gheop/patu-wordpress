@@ -34,9 +34,12 @@ class Patu_Rewrite {
 		if ( ! apply_filters( 'patu_rewrite_enabled', true ) ) {
 			return;
 		}
-		// Flags 0: not flushable, so the callback sees the whole document once at
-		// the end rather than partial chunks on an early flush().
-		ob_start( array( __CLASS__, 'rewrite' ), 0, 0 );
+		// Not flushable, so the callback sees the whole document once at the end
+		// rather than partial chunks on an early ob_flush(). It must stay
+		// removable: WordPress closes every buffer on shutdown with
+		// ob_end_flush() (wp_ob_end_flush_all), which raises a notice on a
+		// buffer that cannot be removed.
+		ob_start( array( __CLASS__, 'rewrite' ), 0, PHP_OUTPUT_HANDLER_CLEANABLE | PHP_OUTPUT_HANDLER_REMOVABLE );
 	}
 
 	/** Rewrite a full HTML document. */
