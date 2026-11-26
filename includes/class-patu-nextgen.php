@@ -61,9 +61,12 @@ class Patu_Nextgen {
 	/**
 	 * Generate the missing next-gen siblings for one attachment.
 	 *
+	 * @param int        $attachment_id Attachment.
+	 * @param float      $budget        Wall-clock seconds to spend (0 = no limit).
+	 * @param array|null $metadata      Metadata to take the sizes from (see Patu_Optimizer::files_for_attachment()).
 	 * @return array{ generated:int, failed:int, saved:int, skipped?:string }
 	 */
-	public static function generate( $attachment_id, $budget = 0 ) {
+	public static function generate( $attachment_id, $budget = 0, $metadata = null ) {
 		$mime = get_post_mime_type( $attachment_id );
 		if ( ! self::is_supported( $attachment_id ) ) {
 			return array( 'generated' => 0, 'failed' => 0, 'saved' => 0, 'skipped' => 'unsupported' );
@@ -82,7 +85,7 @@ class Patu_Nextgen {
 		$generated = 0;
 		$failed    = 0;
 		$saved     = 0;
-		$files     = Patu_Optimizer::files_for_attachment( $attachment_id );
+		$files     = Patu_Optimizer::files_for_attachment( $attachment_id, $metadata );
 
 		foreach ( $files as $path ) {
 			if ( ! file_exists( $path ) ) {

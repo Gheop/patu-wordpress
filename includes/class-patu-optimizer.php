@@ -44,15 +44,25 @@ class Patu_Optimizer {
 		return self::rel( $path );
 	}
 
-	/** Absolute paths of the original file plus every generated size. */
-	public static function files_for_attachment( $attachment_id ) {
+	/**
+	 * Absolute paths of the original file plus every generated size.
+	 *
+	 * @param int        $attachment_id Attachment.
+	 * @param array|null $metadata      Attachment metadata to read the sizes
+	 *                                  from instead of the stored copy. The
+	 *                                  upload filter passes its own: on the
+	 *                                  WordPress 7.2 client-side media path the
+	 *                                  sub-sizes reach that filter before they
+	 *                                  are saved to the database.
+	 */
+	public static function files_for_attachment( $attachment_id, $metadata = null ) {
 		$file = get_attached_file( $attachment_id );
 		if ( ! $file || ! file_exists( $file ) ) {
 			return array();
 		}
 		$files = array( $file );
 		$dir   = trailingslashit( dirname( $file ) );
-		$meta  = wp_get_attachment_metadata( $attachment_id );
+		$meta  = is_array( $metadata ) ? $metadata : wp_get_attachment_metadata( $attachment_id );
 		if ( is_array( $meta ) && ! empty( $meta['sizes'] ) ) {
 			foreach ( $meta['sizes'] as $size ) {
 				if ( ! empty( $size['file'] ) ) {
@@ -69,9 +79,10 @@ class Patu_Optimizer {
 	 * @param int   $attachment_id Attachment.
 	 * @param float $budget        Wall-clock seconds to spend before stopping and
 	 *                             leaving the rest for a later run (0 = no limit).
+	 * @param array|null $metadata Metadata to take the sizes from (see files_for_attachment()).
 	 * @return array{ optimized:int, failed:int, saved:int, skipped?:string }
 	 */
-	public static function optimize_attachment( $attachment_id, $budget = 0 ) {
+	public static function optimize_attachment( $attachment_id, $budget = 0, $metadata = null ) {
 		$mime   = get_post_mime_type( $attachment_id );
 		$format = self::format_for_mime( $mime );
 		if ( null === $format ) {
@@ -88,7 +99,7 @@ class Patu_Optimizer {
 		$saved_now = 0;
 		$optimized = 0;
 		$failed    = 0;
-		$files     = self::files_for_attachment( $attachment_id );
+		$files     = self::files_for_attachment( $attachment_id, $metadata );
 
 		foreach ( $files as $path ) {
 			if ( ! file_exists( $path ) ) {
