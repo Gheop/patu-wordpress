@@ -2,9 +2,9 @@
 Contributors: gheop
 Tags: compress images, optimize images, webp, avif, image optimization
 Requires at least: 6.0
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,10 @@ password field.
 3. Settings: paste your API key, choose in-place or next-gen delivery, and keep a backup of every original.
 
 == Changelog ==
+
+= 0.2.2 =
+* WordPress 7.2: images uploaded with the new in-browser media processing now get every size optimized, not only the original, and the full-size master of a "-scaled" image is left alone as on the server-side path. Tested up to WordPress 7.2 and PHP 8.6.
+* Next-gen mode no longer logs an ob_end_flush() notice at the end of each front-end page when WP_DEBUG is on.
 
 = 0.2.1 =
 * Listing metadata only, no functional change: clearer title and description that surface WebP and AVIF, refreshed search tags, and tested up to WordPress 7.0.

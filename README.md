@@ -97,6 +97,12 @@ live on the webs of larger spiders. It weaves the lightest thread there is. 🕸
 
 ## Changelog
 
+### v0.2.2 — WordPress 7.2 client-side uploads (2026-11-26)
+
+- Client-side media processing: the browser uploads the original with `generate_sub_sizes=false` (`POST /wp/v2/media`), sideloads each sub-size, then calls `/finalize`. WordPress 7.1 added these endpoints; 7.2 uses them for media library uploads in Chromium 137+. The `wp_generate_attachment_metadata` filter runs twice on that path: at create with no sizes, then at finalize with sizes not yet saved. The plugin optimized the original at create, marked the attachment done, and never saw the sizes, which are what themes serve; bulk optimize then skipped them. For an image above `big_image_size_threshold` it also recompressed the full-size master that the server-side path never touches. The create call now waits (core marks it with `__return_empty_array` on `intermediate_image_sizes_advanced`, priority 100) and the finalize call works from the filter's own metadata, in in-place and next-gen modes. Measured on 7.2-RC3 through a real Chromium upload: 6 of 6 files instead of 1 of 6, and for a 3200 px photo the `-scaled` file plus 6 sizes, master untouched. Attachments already uploaded this way keep their done marker and are not reprocessed.
+- The front-end rewrite buffer is now removable (still not flushable). WordPress closes every buffer on shutdown with `ob_end_flush()`, which raised a notice on each front-end page in next-gen mode since v0.2.0.
+- New `tests/client-side-check.php` replays the create/sideload/finalize sequence and checks the buffer flags. Full suite (80 checks) green on WordPress 7.2-RC3 with PHP 8.3 and PHP 8.6, debug log empty. These runs used a local stand-in for the Patu API.
+
 ### v0.2.1 — Listing metadata refresh (2026-08-04)
 
 - Clearer title and description that surface WebP and AVIF, refreshed search tags, tested up to WordPress 7.0. No functional change.
@@ -110,3 +116,9 @@ live on the webs of larger spiders. It weaves the lightest thread there is. 🕸
 ### v0.1.0 — First release (2026-07-14)
 
 - In-place JPEG and WebP optimization, optimize-on-upload, bulk optimize with a progress bar, per-image and bulk restore, a media-library column, a connection test, and stats.
+
+## README changelog
+
+| Version | Date       | Changes                                  |
+|---------|------------|------------------------------------------|
+| 1.0.0   | 2026-11-26 | Add the v0.2.2 entry and this table      |
